@@ -202,14 +202,16 @@ export function createApiRouter(): express.Router {
   });
 
   // ── GET /api/proxy/config ────────────────────────────────────────────────
-  // Returns the residential proxy credentials for the APK's TaskBrowser.
-  // Values come from env variables (set in Railway): PROXY_HOST, PROXY_PORT,
-  // PROXY_USERNAME, PROXY_PASSWORD.
+  // Returns the residential proxy credentials + type (http|socks5) for the
+  // APK's TaskBrowser. Values come from env vars set in Railway:
+  //   PROXY_HOST, PROXY_PORT, PROXY_USERNAME, PROXY_PASSWORD, PROXY_TYPE
+  // Change PROXY_TYPE at runtime on Railway → APK picks it up on next fetch.
   router.get('/proxy/config', (_req: Request, res: Response) => {
     res.json({
       ok: true,
+      type: process.env.PROXY_TYPE || 'http',
       host: process.env.PROXY_HOST || '',
-      port: parseInt(process.env.PROXY_PORT || '1080', 10),
+      port: parseInt(process.env.PROXY_PORT || '8080', 10),
       username: process.env.PROXY_USERNAME || '',
       password: process.env.PROXY_PASSWORD || '',
     });
