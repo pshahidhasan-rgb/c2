@@ -201,6 +201,30 @@ export function createApiRouter(): express.Router {
     });
   });
 
+  // ── GET /api/proxy/config ────────────────────────────────────────────────
+  // Returns the residential proxy credentials for the APK's TaskBrowser.
+  // Values come from env variables (set in Railway): PROXY_HOST, PROXY_PORT,
+  // PROXY_USERNAME, PROXY_PASSWORD.
+  router.get('/proxy/config', (_req: Request, res: Response) => {
+    res.json({
+      ok: true,
+      host: process.env.PROXY_HOST || '',
+      port: parseInt(process.env.PROXY_PORT || '1080', 10),
+      username: process.env.PROXY_USERNAME || '',
+      password: process.env.PROXY_PASSWORD || '',
+    });
+  });
+
+  // ── GET /api/cpa/tasks ──────────────────────────────────────────────────
+  // Returns the list of allowed CPA tracking links for the TaskBrowser.
+  router.get('/cpa/tasks', (_req: Request, res: Response) => {
+    const defaultTasks = [
+      { id: 'cpagrip', url: 'https://www.cpagrip.com', reward: 2 },
+      { id: 'cpalead', url: 'https://www.cpalead.com', reward: 2 },
+    ];
+    res.json({ ok: true, tasks: defaultTasks });
+  });
+
   // ── GET /api/devices ─────────────────────────────────────────────────────
   router.get('/devices', (_req: Request, res: Response) => {
     const snapshot = getRegistrySnapshot();
